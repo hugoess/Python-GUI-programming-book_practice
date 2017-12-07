@@ -1807,7 +1807,7 @@ win.mainloop()
 #%%
 
 # =============================================================================
-# Chapter 3-2 independent message box
+# Chapter 3-2 independent message box & withdrow()
 # =============================================================================
 
 from tkinter import messagebox as mBox
@@ -1818,7 +1818,280 @@ root.withdraw() #remove the debug window
 mBox.showinfo('This is a Title', 'A Python GUI created using ' \
               'tkinter:\nThe year is 2015')
 
+#%%
 
+
+# =============================================================================
+# Chapter 3-3 # Change the main windows icon & spinbox
+# =============================================================================
+
+import tkinter as tk
+from tkinter import ttk
+from tkinter import *
+from tkinter import scrolledtext
+from tkinter import Menu
+from tkinter import messagebox as mBox
+
+#class ToolTip(object):
+#    def __init__(self, widget):
+#        self.widget = widget
+#        self.tipwindow = None
+#        self.id = None
+#        self.x = self.y = 0
+#    def showtip(self, text):
+#        "Display text in tooltip window"
+#        self.text = text
+#        if self.tipwindow or not self.text:
+#            return
+#        x, y, _cx, cy = self.widget.bbox("insert")
+#        x = x + self.widget.winfo_rootx() + 27
+#        y = y + cy + self.widget.winfo_rooty() +27
+#        self.tipwindow = tw = tk.Toplevel(self.widget)
+#        tw.wm_overrideredirect(1)
+#        tw.wm_geometry("+%d+%d" % (x, y))
+#        label = tk.Label(tw, text=self.text, justify=tk.LEFT,
+#        background="#ffffe0", relief=tk.SOLID, borderwidth=1,
+#        font=("tahoma", "8", "normal"))
+#        label.pack(ipadx=1)
+#    
+#    def hidetip(self):
+#        tw = self.tipwindow
+#        self.tipwindow = None
+#        if tw:
+#            tw.destroy()
+##===========================================================
+#def createToolTip( widget, text):
+#    toolTip = ToolTip(widget)
+#    def enter(event):
+#        toolTip.showtip(text)
+#    def leave(event):
+#        toolTip.hidetip()
+#    widget.bind('<Enter>', enter)
+#    widget.bind('<Leave>', leave)
+class ToolTip(object):
+    def __init__(self, widget):
+        self.widget = widget
+        self.tipwindow = None
+        self.id = None
+        self.x = self.y = 0
+        
+    def showtip(self, text):
+        '''Display text in tooltip window'''
+        self.text = text
+        if self.tipwindow or not self.text:
+            return
+        
+
+
+win = tk.Tk()
+win.title("Python GUI")
+win.iconbitmap(r'C:\Users\u14li_000\Documents\GitHub\Python-GUI-programming-book_practice\Peach.ico')
+
+tabControl = ttk.Notebook(win)
+
+tab1 = ttk.Frame(tabControl)
+tabControl.add(tab1, text='Tab 1')
+tab2 = ttk.Frame(tabControl)
+tabControl.add(tab2, text='Tab 2')
+
+tabControl.pack(expand=1, fill="both", padx = 10)
+
+
+#---------------------------------------
+#以上Tabの作成、以下Tab1
+
+#Tab1にMontyを入れる
+monty = ttk.LabelFrame(tab1, text=' Monty Python ')
+monty.grid(column=0, row=0, padx=8, pady=4)
+
+#monty.grid(column = 0, row = 0,padx = 10 , pady =5)
+
+
+
+
+def clickMe():
+    global name
+    action.configure(text= 'Hello ' + nameEntered.get() + ' ' + numberChosen.get())
+    print(nameEntered.get())
+    action.configure(state = 'disable')
+
+
+action = ttk.Button(monty, text = 'Click Me!', command = clickMe)
+action.grid(column = 2, row = 1)
+
+name = StringVar()
+ttk.Label(monty, text = 'Enter a name: ').grid(column = 0, row = 0, sticky = W)
+nameEntered = ttk.Entry(monty, width=12, textvariable = name)
+nameEntered.grid(column = 0, row=1, sticky = W)
+
+nameEntered.focus()
+
+
+
+ttk.Label(monty, text = 'Choose a number:').grid(column = 1, row = 0, sticky = W)
+number = tk.StringVar() #ここでnumberをStringと定義したので、1,2,4,42が表示される時に、Stringになる
+numberChosen = ttk.Combobox(monty, width = 12, textvariable = number, state= 'readonly')
+numberChosen['values' ] = (1,2,4,42,100)
+numberChosen.grid(column=1, row = 1, sticky = W)
+numberChosen.current(2)
+
+
+def _spin():
+    value = spin.get()
+    print(value)
+    scr.insert(tk.INSERT, value + '\n')
+# Adding a Spinbox widget
+spin = Spinbox(monty, from_ = 0, to = 10, width = 5, bd = 8, command = _spin)
+#bd is a short-hand notation for the borderwidth property.
+spin.grid(column = 0, row = 2)
+createToolTip(spin, 'This is a Spin control.')
+
+
+spin_fixed_values = Spinbox(monty, values=(1, 2, 4, 42, 100), width=5, bd=20,
+command=_spin )
+#spin_fixed_values.relief('tk.RIDGE')
+spin_fixed_values.grid(column=1, row=2)
+
+#spin = Spinbox(monty, from_=0, to=10, width=5, bd=8, command=_spin)
+
+# ScrolledText
+scrolW = 30
+scrolH = 10
+scr = scrolledtext.ScrolledText(monty, width = scrolW, height = scrolH, wrap = tk.WORD)
+scr.grid(column = 0, columnspan=3, row = 5, sticky = 'WE', padx = 20)
+
+
+
+#---------------------------------------
+#以上Tab1、以下Tab2
+
+monty2 = ttk.LabelFrame(tab2, text=' The Snake ')
+monty2.grid(column=0, row=0, padx=8, pady=4)
+
+#chVarDis = tk.IntVar()
+#check1 = tk.Checkbutton(win, text= 'Disabled', variable = chVarDis, state = 'disabled')
+#check1.select()
+#check1.grid(column=0, row = 4, sticky = W)
+#
+#chVarUn = tk.IntVar()
+#check2 = tk.Checkbutton(win, text= 'Unchecked', variable = chVarUn)
+#check2.deselect()
+#check2.grid(column=1, row = 4, sticky = W)
+#
+#chVarEn = tk.IntVar()
+#check3 = tk.Checkbutton(win, text= 'Enabled', variable = chVarEn)
+#check3.select()
+#check3.grid(column=2, row = 4, sticky = W)
+
+
+chVar = ['chVarDis', 'chVarUn', 'chVarEn']
+chText = ['Disabled', 'Unchecked', 'Enabled']
+chState = ['disabled', None, None]
+
+for check in range(3):
+    checkBu = 'check' + str(check)
+    checkBu = tk.Checkbutton(monty2, text = chText[check], variable = chVar[check], state = chState[check])
+#    for eck in checkBu:
+    checkBu.select()
+#    check0.select()
+#    check1.deselect()
+#    check2.select()
+    checkBu.grid(column = check, row = 4, sticky = tk.W)
+    
+
+
+colors = ['Blue', 'Gold', 'Red']
+
+def radcall():
+    radSel = radVar1.get()
+#    if radSel == 0:win.configure(background = colors[0])
+#    elif radSel == 1:win.configure(background = colors[1])
+#    elif radSel == 2:win.configure(background = colors[2])
+    if radSel == 0:monty2.configure(text = colors[0])
+    elif radSel == 1:monty2.configure(text = colors[1])
+    elif radSel == 2:monty2.configure(text = colors[2])
+
+    print(radVar1)
+    print(radVar1.get())
+    print(radSel)
+    
+radVar1= tk.IntVar()
+radVar1.set(99)
+
+for col in range(3):
+    curRad = 'rad' + str(col)
+    curRad = tk.Radiobutton(monty2, text = colors[col], variable = radVar1, value = col, command = radcall )
+    curRad.grid(column = col, row = 6, sticky = tk.W, columnspan = 3)
+
+
+
+
+labelsFrame = ttk.LabelFrame(tab2, text = 'Labels in a Frame')
+labelsFrame.grid(column = 0, row = 7, padx =5, pady = 5, sticky = W)
+
+ttk.Label(labelsFrame, text ='Label1').grid(column = 0, row= 0)
+ttk.Label(labelsFrame, text ='Label2').grid(column = 0, row= 1)
+ttk.Label(labelsFrame, text ='Label3').grid(column = 0, row= 2)
+
+for child in labelsFrame.winfo_children():
+    child.grid_configure(padx=8, pady=4)
+
+
+
+#---------------------------------------
+#以上Tab2、以下Menubar
+
+menuBar = Menu(win)
+win.config(menu = menuBar)
+
+def _quit():
+    win.quit()
+    win.destroy()
+#    exit()
+
+
+fileMenu = Menu(menuBar, tearoff = 0)
+fileMenu.add_command(label = 'New')
+fileMenu.add_separator()
+fileMenu.add_command(label="Exit", command = _quit)
+menuBar.add_cascade(label = 'File', menu = fileMenu)
+
+def _msgBox():
+    mBox.showinfo('Python Message Info Box', \
+                  'A Python GUI created using ' \
+                  'tkinter:\nThe year is 2015.')
+    print('yo^^^')
+    
+def _warBox():
+    mBox.showwarning('Python Message Warning Box', 'A Python GUI ' \
+    'created using tkinter:\nWarning: There might be a bug in this code.')
+
+def _errBox():
+    mBox.showerror('Python Message Error Box', 'A Python GUI created' \
+    'using tkinter:\nError: Houston ~ we DO have a serious PROBLEM!')
+
+def _ask_yes_no_Box():
+    answer = mBox.askyesno("Python Message Dual Choice Box", "Are you" \
+    "sure you really wish to do this?")
+    print(answer)
+    if answer == True:
+        _msgBox()
+    elif answer == False:
+        pass
+
+Boxes = ["About(Message box)", "About(Warning box)", "About(Error box)", "_ask_yes_no_Box"]
+Box_commands = [_msgBox, _warBox, _errBox, _ask_yes_no_Box]
+
+helpMenu = Menu(menuBar, tearoff=0)
+for x in range(len(Boxes)):
+    helpMenu.add_command(label=Boxes[x], command=Box_commands[x])
+    
+#helpMenu.add_command(label="About(Message box)", command=_msgBox)
+#helpMenu.add_command(label="About(Warning box)", command=_warBox)
+#helpMenu.add_command(label="About(Error box)", command=_errBox)
+menuBar.add_cascade(label="Help", menu=helpMenu)
+
+win.mainloop()
 
 
 
